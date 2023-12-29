@@ -1,6 +1,18 @@
 # Automating AWS Infrastructure Creation With IAC (Terraform)
 
 
+#### Note:
+
+As we go along in this project- 
+
+- It is important when running a terraform project to have
+- An understanding of your goal, what you are set to achieve. (eg. for this project the desired AWS Infrasture end state)
+- A good knowledge of the IAC (Infrastructure as Code) - Terraform
+The ability to effectively use up to date Terraform documentation- [Terraform-Documentation](https://registry.terraform.io/)
+
+
+
+
 ### PREREQUISITES
 
 In this project we are tasked with the responsibility to create AWS Infrastructure using Terraform automation. 
