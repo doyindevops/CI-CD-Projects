@@ -179,12 +179,14 @@ We will now refactor the code to make it dynamic. To do this we will introduce v
 
 Terraform has a functionality that allows us to pull data which exposes information to us. Let us fetch ***Availability zones*** from `AWS`, and replace the hard coded value in the subnet’s availability_zone section.
 
-        #Get list of availability zones
-        data "aws_availability_zones" "available" {
-        state = "available"
-        }
+               #Get list of availability zones
+                data "aws_availability_zones" "available" {
+                state = "available"
+                }
 
 4. To make use of this new data resource, we will need to introduce a count argument in the subnet block: Something like this.
+
+
 
         #Create public subnet1
         resource "aws_subnet" "public" { 
@@ -245,41 +247,32 @@ What we have now, is sufficient to create the subnet resource required. But if y
 Now our `main.tf` looks this:
 
 
-        #Get list of availability zones
-        data "aws_availability_zones" "available" {
-        state = "available"
-        }
+                #Get the list of availability zones
+                data "aws_availability_zones" "available" {
+                state = "available" 
+                }
 
-        variable "region" {
-            default = "us-east-1"
-        }
+                provider "aws" {
+                region = var.region
+                }
 
-        variable "vpc_cidr" {
-            default = "172.16.0.0/16"
-        }
+                #Create a VPC
+                resource "aws_vpc" "main" {
+                cidr_block = var.vpc_cidr
+                }
 
-        provider "aws" {
-        region = var.region
-        }
+                #Creating public subnets
+                resource "aws_subnet" "public" {
+                count = var.preferred_number_of_public_subnets == null ? lenght(data.aws_availability_zones.available.names) : var.preferred_number_of_public_subnets
+                vpc_id     = aws_vpc.main.id
+                cidr_block = cidrsubnet(var.vpc_cidr, 4 , count.index)
+                map_public_ip_on_launch = true
+                availability_zone = data.aws_availability_zones.available.names[count.index]
 
-        #Create VPC
-        resource "aws_vpc" "main" {
-        cidr_block  = var.vpc_cidr
-        
-        }
+                
+                }
 
-        #Create public subnets
-        resource "aws_subnet" "public" {
-        count  = var.preferred_number_of_public_subnets == null ? length(data.aws_availability_zones.available.names) : var.preferred_number_of_public_subnets   
-        vpc_id = aws_vpc.main.id
-        cidr_block              = cidrsubnet(var.vpc_cidr, 4 , count.index)
-        map_public_ip_on_launch = true
-        availability_zone       = data.aws_availability_zones.available.names[count.index]
-
-        }
-
-
-[Title](main.tf)
+![Alt text](Images/main.tf.png)
 
 
 #### Step 4 
