@@ -1,5 +1,5 @@
 
-# DEVOPS AUTOMATION PROJECTS
+# DEVOPS AUTOMATION PROJECTS -CI/CD
 
 
 This is my Project Implementation of 15 Intensive CI/CD and automation real-time Projects 💻 
